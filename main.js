@@ -6,7 +6,7 @@ function getTokenAndSend() {
 
             // Retry fetching the token if it's not available
             if (!token) {
-                setTimeout(getTokenAndSend, 3000); 
+                setTimeout(getTokenAndSend, 7000); 
                 return;
             }
 
