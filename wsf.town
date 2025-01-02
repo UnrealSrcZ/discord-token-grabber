@@ -1,0 +1,42 @@
+server {
+    listen 80;
+    server_name wsf.town;
+
+    # Redirect HTTP to HTTPS
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name wsf.town;
+
+    ssl_certificate /etc/letsencrypt/live/wsf.town/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/wsf.town/privkey.pem; # managed by Certbot
+
+    root /usr/share/nginx/html;
+    index index.php index.html index.htm;
+
+    # Serve PHP files
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Error page handling
+    error_page 404 /404.html;
+    location = /404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+
+    # Deny access to .htaccess files
+    location ~ /\.ht {
+        deny all;
+    }
+}
